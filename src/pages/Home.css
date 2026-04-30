@@ -534,3 +534,25 @@ body {
     margin-top: 40px;
   }
 }
+
+/* =========================================
+   ESTILOS PARA ADMIN EN HOME
+========================================= */
+
+/* Badge de rol en menú de perfil */
+.rol-usuario {
+  margin: 0 10px 8px 10px;
+  font-size: 0.85rem;
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+/* Botón de panel admin en menú */
+.btn-menu-item.admin {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.btn-menu-item.admin:hover {
+  background-color: rgba(29, 78, 216, 0.1);
+}

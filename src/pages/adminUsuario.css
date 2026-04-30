@@ -1,0 +1,603 @@
+/* =========================================
+   VARIABLES DE COLOR 
+========================================= */
+:root {
+  --bg-principal: #F4F7F6;
+  --bg-tarjeta: #FFFFFF;
+  --texto-principal: #2D3748;
+  --texto-secundario: #4A5568;
+  --texto-terciario: #718096;
+  --borde-suave: #E2E8F0;
+
+  --color-primario: #1D4ED8;
+  --color-primario-hover: #1E3A8A;
+
+  --alerta-roja-bg: #FEF2F2;
+  --alerta-roja-borde: #DC2626;
+  --alerta-roja-texto: #991B1B;
+
+  --exito-bg: #DCFCE7;
+  --exito-borde: #22C55E;
+  --exito-texto: #166534;
+
+  --focus-ring: 0 0 0 3px rgba(29, 78, 216, 0.5);
+}
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+.admin-usuarios-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-principal);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--texto-principal);
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.admin-usuarios-header {
+  background: linear-gradient(135deg, var(--color-primario) 0%, #1E40AF 100%);
+  color: #FFFFFF;
+  padding: 20px;
+}
+
+.admin-usuarios-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.admin-usuarios-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-volver {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-usuarios-info h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.btn-cerrar-sesion-admin {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.btn-cerrar-sesion-admin:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* =========================================
+   MENSAJES DE ÉXITO/ERROR
+========================================= */
+.mensaje-exito,
+.mensaje-error {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  border-left: 4px solid;
+}
+
+.mensaje-exito {
+  background-color: var(--exito-bg);
+  color: var(--exito-texto);
+  border-left-color: var(--exito-borde);
+}
+
+.mensaje-error {
+  background-color: var(--alerta-roja-bg);
+  color: var(--alerta-roja-texto);
+  border-left-color: var(--alerta-roja-borde);
+}
+
+/* =========================================
+   CONTROLES (BÚSQUEDA Y FILTROS)
+========================================= */
+.admin-usuarios-controles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.control-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-grupo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.input-busqueda,
+.select-filtro {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--texto-principal);
+  min-height: 36px;
+}
+
+.input-busqueda:focus,
+.select-filtro:focus {
+  outline: none;
+  border-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.btn-agregar-usuario {
+  background-color: #22C55E;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  min-height: 36px;
+  align-self: flex-end;
+}
+
+.btn-agregar-usuario:hover {
+  background-color: #16A34A;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+/* =========================================
+   CONTENEDOR DE TABLA
+========================================= */
+.admin-usuarios-contenedor {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabla-responsive {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex: 1;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-tarjeta);
+}
+
+.tabla-usuarios thead {
+  background-color: var(--bg-principal);
+  position: sticky;
+  top: 0;
+}
+
+.tabla-usuarios th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--texto-principal);
+  border-bottom: 2px solid var(--borde-suave);
+}
+
+.tabla-usuarios tbody tr {
+  border-bottom: 1px solid var(--borde-suave);
+  transition: background-color 0.2s ease;
+}
+
+.tabla-usuarios tbody tr:hover {
+  background-color: var(--bg-principal);
+}
+
+.tabla-usuarios td {
+  padding: 14px 12px;
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+}
+
+.tabla-usuarios tbody tr.estado-inactivo {
+  opacity: 0.7;
+}
+
+.sin-resultados {
+  text-align: center;
+  padding: 40px 12px;
+  color: var(--texto-terciario);
+  font-style: italic;
+}
+
+/* =========================================
+   BADGES (Rol y Estado)
+========================================= */
+.badge-rol,
+.badge-estado {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.badge-rol.rol-admin {
+  background-color: #E0E7FF;
+  color: var(--color-primario);
+}
+
+.badge-rol.rol-user {
+  background-color: #F0FDF4;
+  color: #166534;
+}
+
+.badge-estado.estado-activo {
+  background-color: var(--exito-bg);
+  color: var(--exito-texto);
+}
+
+.badge-estado.estado-inactivo {
+  background-color: #F3F4F6;
+  color: var(--texto-terciario);
+}
+
+/* =========================================
+   ACCIONES (BOTONES EN TABLA)
+========================================= */
+.acciones-usuario {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-accion-editar,
+.btn-accion-contrasena,
+.btn-accion-estado,
+.btn-accion-eliminar {
+  background: none;
+  border: 1px solid var(--borde-suave);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  transition: all 0.2s ease;
+}
+
+.btn-accion-editar:hover {
+  background-color: #E0E7FF;
+  border-color: var(--color-primario);
+}
+
+.btn-accion-contrasena:hover {
+  background-color: #FEF9E7;
+  border-color: #F59E0B;
+}
+
+.btn-accion-estado:hover {
+  background-color: var(--exito-bg);
+  border-color: var(--exito-borde);
+}
+
+.btn-accion-eliminar:hover {
+  background-color: var(--alerta-roja-bg);
+  border-color: var(--alerta-roja-borde);
+}
+
+.btn-accion-editar:disabled,
+.btn-accion-contrasena:disabled,
+.btn-accion-estado:disabled,
+.btn-accion-eliminar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   CONTADOR DE USUARIOS
+========================================= */
+.contador-usuarios {
+  text-align: right;
+  padding-top: 16px;
+  font-size: 0.9rem;
+  color: var(--texto-terciario);
+}
+
+.contador-usuarios strong {
+  color: var(--texto-principal);
+  font-weight: 700;
+}
+
+/* =========================================
+   MODALES
+========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: var(--bg-tarjeta);
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  padding: 28px 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.modal-content h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
+  color: var(--texto-principal);
+}
+
+.error-modal {
+  background-color: var(--alerta-roja-bg);
+  color: var(--alerta-roja-texto);
+  border: 1px solid var(--alerta-roja-borde);
+  border-left: 4px solid var(--alerta-roja-borde);
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+/* =========================================
+   FORMULARIO EN MODALES
+========================================= */
+.form-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-grupo label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--texto-principal);
+}
+
+.form-grupo input,
+.form-grupo select {
+  padding: 10px 12px;
+  border: 1px solid var(--borde-suave);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--texto-principal);
+  background-color: var(--bg-principal);
+  transition: border-color 0.3s ease;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: var(--focus-ring);
+}
+
+/* =========================================
+   BOTONES DEL MODAL
+========================================= */
+.modal-botones {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-cancelar,
+.btn-guardar {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 40px;
+}
+
+.btn-cancelar {
+  background-color: var(--bg-principal);
+  color: var(--texto-secundario);
+  border: 1px solid var(--borde-suave);
+}
+
+.btn-cancelar:hover {
+  background-color: var(--borde-suave);
+}
+
+.btn-guardar {
+  background-color: var(--color-primario);
+  color: #FFFFFF;
+}
+
+.btn-guardar:hover {
+  background-color: var(--color-primario-hover);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+/* =========================================
+   ACCESIBILIDAD
+========================================= */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN - TABLET
+========================================= */
+@media (max-width: 768px) {
+  .admin-usuarios-top {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-usuarios-info h1 {
+    font-size: 1.3rem;
+  }
+
+  .admin-usuarios-controles {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .btn-agregar-usuario {
+    grid-column: 1 / -1;
+  }
+
+  .tabla-usuarios th,
+  .tabla-usuarios td {
+    padding: 12px 8px;
+    font-size: 0.8rem;
+  }
+
+  .acciones-usuario {
+    gap: 4px;
+  }
+
+  .btn-accion-editar,
+  .btn-accion-contrasena,
+  .btn-accion-estado,
+  .btn-accion-eliminar {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+}
+
+/* =========================================
+   RESPONSIVE DESIGN - MOBILE
+========================================= */
+@media (max-width: 480px) {
+  .admin-usuarios-header {
+    padding: 16px;
+  }
+
+  .admin-usuarios-top {
+    flex-wrap: wrap;
+  }
+
+  .admin-usuarios-info h1 {
+    font-size: 1.1rem;
+  }
+
+  .admin-usuarios-controles {
+    grid-template-columns: 1fr;
+  }
+
+  .tabla-responsive {
+    border-radius: 8px;
+  }
+
+  .tabla-usuarios thead {
+    display: none;
+  }
+
+  .tabla-usuarios tbody tr {
+    display: block;
+    margin-bottom: 12px;
+    border: 1px solid var(--borde-suave);
+    border-radius: 8px;
+    background-color: var(--bg-tarjeta);
+    padding: 12px;
+  }
+
+  .tabla-usuarios td {
+    display: block;
+    padding: 8px 0;
+    border: none;
+    text-align: right;
+  }
+
+  .tabla-usuarios td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 700;
+    color: var(--texto-principal);
+  }
+
+  .acciones-usuario {
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+  .contador-usuarios {
+    text-align: center;
+    padding-top: 12px;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .modal-botones {
+    gap: 8px;
+  }
+}
