@@ -1,0 +1,347 @@
+/* =========================================
+   VARIABLES DE COLOR 
+========================================= */
+:root {
+  --bg-principal: #F4F7F6;
+  --bg-tarjeta: #FFFFFF;
+  --texto-principal: #2D3748;
+  --texto-secundario: #4A5568;
+  --texto-terciario: #718096;
+  --borde-suave: #E2E8F0;
+
+  --color-primario: #1D4ED8;
+  --color-primario-hover: #1E3A8A;
+
+  --alerta-roja-bg: #FEF2F2;
+  --alerta-roja-borde: #DC2626;
+  --alerta-roja-texto: #991B1B;
+
+  --focus-ring: 0 0 0 3px rgba(29, 78, 216, 0.5);
+}
+
+/* =========================================
+   OVERLAY DEL MODAL ADMIN
+========================================= */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   CONTENIDO DEL MODAL
+========================================= */
+.admin-modal-content {
+  background-color: var(--bg-tarjeta);
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   ENCABEZADO DEL MODAL
+========================================= */
+.admin-modal-header {
+  background: linear-gradient(135deg, var(--color-primario) 0%, #1E40AF 100%);
+  color: #FFFFFF;
+  padding: 40px 24px 32px;
+  text-align: center;
+}
+
+.admin-modal-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.admin-modal-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.admin-modal-subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #E0E7FF;
+  font-weight: 500;
+}
+
+/* =========================================
+   CUERPO DEL MODAL
+========================================= */
+.admin-modal-body {
+  padding: 32px 24px;
+  flex: 1;
+}
+
+.admin-intro {
+  margin: 0 0 28px 0;
+  font-size: 1.05rem;
+  color: var(--texto-principal);
+  font-weight: 600;
+}
+
+/* =========================================
+   OPCIONES (CARDS)
+========================================= */
+.admin-opciones {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.admin-opcion-card {
+  background-color: var(--bg-principal);
+  border: 2px solid var(--borde-suave);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-opcion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primario), #1E40AF);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: left;
+}
+
+.admin-opcion-card:hover::before {
+  transform: scaleX(1);
+}
+
+.admin-opcion-card:hover {
+  border-color: var(--color-primario);
+  background-color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(29, 78, 216, 0.1);
+  transform: translateY(-2px);
+}
+
+.admin-opcion-card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-color: var(--color-primario);
+}
+
+.admin-opcion-card:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   ICONO DE LA OPCIÓN
+========================================= */
+.opcion-icon {
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  width: 70px;
+  background: linear-gradient(135deg, rgba(29, 78, 216, 0.1), rgba(30, 58, 138, 0.1));
+  border-radius: 12px;
+}
+
+/* =========================================
+   TEXTO DE LA OPCIÓN
+========================================= */
+.admin-opcion-card h3 {
+  margin: 8px 0 4px 0;
+  font-size: 1.2rem;
+  color: var(--texto-principal);
+  font-weight: 700;
+}
+
+.admin-opcion-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--texto-terciario);
+  line-height: 1.5;
+}
+
+/* =========================================
+   BADGE DE ESTADO
+========================================= */
+.opcion-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #FEF9E7;
+  color: #92400E;
+  margin-top: 8px;
+}
+
+.opcion-badge.ready {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
+/* =========================================
+   FOOTER DEL MODAL
+========================================= */
+.admin-modal-footer {
+  padding: 20px 24px 24px;
+  border-top: 1px solid var(--borde-suave);
+  background-color: var(--bg-principal);
+  display: flex;
+  gap: 12px;
+}
+
+/* =========================================
+   BOTÓN CERRAR SESIÓN
+========================================= */
+.btn-admin-cerrar-sesion {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--alerta-roja-bg);
+  color: var(--alerta-roja-texto);
+  border: 2px solid var(--alerta-roja-borde);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 48px;
+}
+
+.btn-admin-cerrar-sesion:hover {
+  background-color: var(--alerta-roja-borde);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-admin-cerrar-sesion:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn-admin-cerrar-sesion:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   REGLAS GLOBALES DE ACCESIBILIDAD
+========================================= */
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN - MOBILE
+========================================= */
+@media (max-width: 480px) {
+  .admin-modal-overlay {
+    padding: 16px;
+  }
+
+  .admin-modal-content {
+    max-width: 100%;
+  }
+
+  .admin-modal-header {
+    padding: 32px 20px 24px;
+  }
+
+  .admin-modal-icon {
+    font-size: 2.5rem;
+  }
+
+  .admin-modal-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-modal-body {
+    padding: 24px 20px;
+  }
+
+  .opcion-icon {
+    font-size: 2.5rem;
+    height: 60px;
+    width: 60px;
+  }
+}
+
+/* =========================================
+   RESPONSIVE DESIGN - TABLET
+========================================= */
+@media (min-width: 768px) {
+  .admin-opciones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-modal-header {
+    padding: 48px 32px 40px;
+  }
+
+  .admin-modal-body {
+    padding: 40px 32px;
+  }
+}
+
+/* =========================================
+   RESPONSIVE DESIGN - DESKTOP
+========================================= */
+@media (min-width: 1024px) {
+  .admin-modal-content {
+    max-width: 600px;
+  }
+
+  .admin-opcion-card {
+    padding: 32px;
+  }
+}
