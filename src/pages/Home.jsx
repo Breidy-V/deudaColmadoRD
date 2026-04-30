@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import './Home.css';
 
-function Home() {
-  const [usuario] = useState({ nombre: "Doña Carmen", negocio: "FiadoRD" });
+function Home({ usuario, onLogout, onOpenAdminModal }) {
+  // ==========================================
+  // ESTADO DEL COMPONENTE HOME
+  // ==========================================
+  const [usuarioApp] = useState({
+    nombre: usuario?.nombre || "Usuario",
+    negocio: "FiadoRD",
+  });
+
   const [totalDeudas] = useState(15450.00);
   const [deudores] = useState([
     { id: 1, nombre: "Juan Pérez", monto: 2500, diasVencido: 18 },
@@ -14,6 +21,27 @@ function Home() {
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [mostrarMenuPerfil, setMostrarMenuPerfil] = useState(false);
 
+  // ==========================================
+  // MANEJADOR DE CERRAR SESIÓN
+  // ==========================================
+  const handleCerrarSesion = () => {
+    if (
+      window.confirm(
+        '¿Estás seguro de que deseas cerrar sesión?'
+      )
+    ) {
+      onLogout();
+    }
+  };
+
+  // ==========================================
+  // MANEJADOR PARA IR A ADMINISTRACIÓN (ADMIN)
+  // ==========================================
+  const handleIrAAdministracion = () => {
+    setMostrarMenuPerfil(false);
+    onOpenAdminModal?.();
+  };
+
   return (
     <div className="mobile-app-container">
       
@@ -24,7 +52,7 @@ function Home() {
         <div className="top-nav">
           <div className="info-negocio">
             <span aria-hidden="true">🏪</span>
-            <h2>{usuario.negocio}</h2>
+            <h2>{usuarioApp.negocio}</h2>
           </div>
           
           <div className="perfil-usuario">
@@ -32,16 +60,41 @@ function Home() {
               className="btn-avatar" 
               onClick={() => setMostrarMenuPerfil(!mostrarMenuPerfil)}
               aria-label="Opciones de cuenta"
+              title={`${usuarioApp.nombre} (${usuario?.rol})`}
             >
-              {usuario.nombre.charAt(0)}
+              {usuarioApp.nombre.charAt(0).toUpperCase()}
             </button>
             
             {mostrarMenuPerfil && (
               <div className="menu-desplegable">
-                <p className="saludo">Hola, <strong>{usuario.nombre}</strong></p>
+                <p className="saludo">Hola, <strong>{usuarioApp.nombre}</strong></p>
+                <p className="rol-usuario">
+                  {usuario?.rol === 'ADMIN' ? '👑 Administrador' : '👤 Usuario'}
+                </p>
                 <hr />
+                
+                {/* Opción para ADMIN: Ir a Administración */}
+                {usuario?.rol === 'ADMIN' && (
+                  <>
+                    <button 
+                      className="btn-menu-item admin"
+                      onClick={handleIrAAdministracion}
+                      aria-label="Ir a panel de administración"
+                    >
+                      ⚙️ Panel de Administración
+                    </button>
+                    <hr />
+                  </>
+                )}
+
                 <button className="btn-menu-item">⚙️ Configuración</button>
-                <button className="btn-menu-item salir">🚪 Cerrar Sesión</button>
+                <button 
+                  className="btn-menu-item salir"
+                  onClick={handleCerrarSesion}
+                  aria-label="Cerrar sesión"
+                >
+                  🚪 Cerrar Sesión
+                </button>
               </div>
             )}
           </div>
@@ -67,7 +120,11 @@ function Home() {
         </div>
 
         <div className="botones-grid">
-          <button className="btn-accion" onClick={() => setMostrarModalAdd(true)} aria-label="Añadir nuevo cliente">
+          <button 
+            className="btn-accion" 
+            onClick={() => setMostrarModalAdd(true)} 
+            aria-label="Añadir nuevo cliente"
+          >
             <span aria-hidden="true">➕</span> Añadir Cliente
           </button>
           <button className="btn-accion" aria-label="Registrar nuevo fiado">
