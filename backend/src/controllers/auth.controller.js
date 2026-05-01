@@ -20,7 +20,16 @@ export const login = async (req, res) => {
 
     const token = generateToken(dbUser);
 
-    res.json({ token });
+    // Devolver token + datos del usuario
+    res.json({ 
+      token,
+      id: dbUser.id,
+      name: dbUser.name,
+      email: dbUser.email,
+      user: dbUser.user,
+      rol: dbUser.rol,
+      estado: dbUser.estado
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
