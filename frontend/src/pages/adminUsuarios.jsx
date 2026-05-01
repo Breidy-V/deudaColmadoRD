@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api } from '../services/api';
 import './adminUsuario.css';
 
 function AdminUsuarios({ usuario, onBack, onLogout }) {
@@ -79,11 +80,11 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
   // ==========================================
   const usuariosFiltrados = usuarios
     .filter((u) => {
-      // Filtro de búsqueda
+      // Filtro de búsqueda - con validaciones
       const coincideBusqueda =
-        u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        u.email.toLowerCase().includes(busqueda.toLowerCase()) ||
-        (u.usuario && u.usuario.toLowerCase().includes(busqueda.toLowerCase()));
+        (u.nombre && u.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
+        (u.email && u.email.toLowerCase().includes(busqueda.toLowerCase())) ||
+        (u.user && u.user.toLowerCase().includes(busqueda.toLowerCase()));
 
       // Filtro por rol
       const coincideRol = filtroRol === 'todos' || u.rol === filtroRol;
@@ -95,11 +96,11 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
     })
     .sort((a, b) => {
       if (ordenar === 'fecha-desc') {
-        return new Date(b.fecha_creacion) - new Date(a.fecha_creacion);
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
       } else if (ordenar === 'fecha-asc') {
-        return new Date(a.fecha_creacion) - new Date(b.fecha_creacion);
+        return new Date(a.created_at || 0) - new Date(b.created_at || 0);
       } else if (ordenar === 'nombre') {
-        return a.nombre.localeCompare(b.nombre);
+        return (a.nombre || '').localeCompare(b.nombre || '');
       }
       return 0;
     });
@@ -128,7 +129,7 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
     }));
   };
 
-  const handleGuardarNuevoUsuario = (e) => {
+  const handleGuardarNuevoUsuario = async (e) => {
     e.preventDefault();
     setError('');
     setExito('');
@@ -149,27 +150,31 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
       return;
     }
 
-    // PLACEHOLDER: Aquí va la llamada a POST /api/admin/usuarios
-    console.log('Crear nuevo usuario:', formAgregar);
+    try {
+      // Llamar API
+      const nuevoUsuario = await api.users.create(
+        formAgregar.nombre,
+        formAgregar.email,
+        formAgregar.contrasena
+      );
 
-    // Simular creación
-    const nuevoUsuario = {
-      id: Math.max(...usuarios.map((u) => u.id), 0) + 1,
-      nombre: formAgregar.nombre,
-      email: formAgregar.email,
-      usuario: null,
-      rol: formAgregar.rol,
-      estado: 'activo',
-      fecha_creacion: new Date().toISOString().split('T')[0],
-      ultimo_acceso: null,
-    };
+      // Agregar a la lista local
+      setUsuarios([...usuarios, {
+        ...nuevoUsuario,
+        rol: formAgregar.rol,
+        estado: 'activo',
+        fecha_creacion: new Date().toISOString().split('T')[0],
+        ultimo_acceso: null,
+      }]);
 
-    setUsuarios([...usuarios, nuevoUsuario]);
-    setExito(`Usuario ${formAgregar.nombre} creado exitosamente`);
-    setTimeout(() => {
-      setMostrarModalAgregar(false);
-      setExito('');
-    }, 2000);
+      setExito(`Usuario ${formAgregar.nombre} creado exitosamente`);
+      setTimeout(() => {
+        setMostrarModalAgregar(false);
+        setExito('');
+      }, 2000);
+    } catch (error) {
+      setError(error.message || 'Error al crear usuario');
+    }
   };
 
   // ==========================================
@@ -194,7 +199,7 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
     }));
   };
 
-  const handleGuardarEdicionUsuario = (e) => {
+  const handleGuardarEdicionUsuario = async (e) => {
     e.preventDefault();
     setError('');
     setExito('');
@@ -204,23 +209,32 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
       return;
     }
 
-    // PLACEHOLDER: Aquí va la llamada a PUT /api/admin/usuarios/:id
-    console.log('Editar usuario:', { id: usuarioSeleccionado.id, ...formEditar });
+    try {
+      // Llamar API
+      await api.users.update(
+        usuarioSeleccionado.id,
+        formEditar.nombre,
+        formEditar.email,
+        formEditar.rol
+      );
 
-    // Simular edición
-    setUsuarios(
-      usuarios.map((u) =>
-        u.id === usuarioSeleccionado.id
-          ? { ...u, nombre: formEditar.nombre, email: formEditar.email, rol: formEditar.rol }
-          : u
-      )
-    );
+      // Actualizar en lista local
+      setUsuarios(
+        usuarios.map((u) =>
+          u.id === usuarioSeleccionado.id
+            ? { ...u, nombre: formEditar.nombre, email: formEditar.email, rol: formEditar.rol }
+            : u
+        )
+      );
 
-    setExito('Usuario actualizado exitosamente');
-    setTimeout(() => {
-      setMostrarModalEditar(false);
-      setExito('');
-    }, 2000);
+      setExito('Usuario actualizado exitosamente');
+      setTimeout(() => {
+        setMostrarModalEditar(false);
+        setExito('');
+      }, 2000);
+    } catch (error) {
+      setError(error.message || 'Error al actualizar usuario');
+    }
   };
 
   // ==========================================
@@ -245,7 +259,7 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
     }));
   };
 
-  const handleGuardarNuevaContrasena = (e) => {
+  const handleGuardarNuevaContrasena = async (e) => {
     e.preventDefault();
     setError('');
     setExito('');
@@ -265,36 +279,49 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
       return;
     }
 
-    // PLACEHOLDER: Aquí va la llamada a PUT /api/admin/usuarios/:id/contrasena
-    console.log('Cambiar contraseña para usuario:', usuarioSeleccionado.id);
+    try {
+      // Llamar API
+      await api.users.changePassword(
+        usuarioSeleccionado.id,
+        formContrasena.contrasenaNueva,
+        formContrasena.confirmarContrasena
+      );
 
-    setExito('Contraseña actualizada exitosamente');
-    setTimeout(() => {
-      setMostrarModalContrasena(false);
-      setExito('');
-    }, 2000);
+      setExito('Contraseña actualizada exitosamente');
+      setTimeout(() => {
+        setMostrarModalContrasena(false);
+        setExito('');
+      }, 2000);
+    } catch (error) {
+      setError(error.message || 'Error al cambiar contraseña');
+    }
   };
 
   // ==========================================
   // MANEJADORES DE ELIMINAR/ACTIVAR-DESACTIVAR
   // ==========================================
-  const handleEliminarUsuario = (u) => {
+  const handleEliminarUsuario = async (u) => {
     if (u.rol === 'ADMIN' && usuarios.filter((x) => x.rol === 'ADMIN').length === 1) {
       setError('No se puede eliminar el único administrador');
       return;
     }
 
     if (window.confirm(`¿Estás seguro de que deseas eliminar a ${u.nombre}?`)) {
-      // PLACEHOLDER: Aquí va la llamada a DELETE /api/admin/usuarios/:id
-      console.log('Eliminar usuario:', u.id);
+      try {
+        // Llamar API
+        await api.users.delete(u.id);
 
-      setUsuarios(usuarios.filter((x) => x.id !== u.id));
-      setExito(`${u.nombre} ha sido eliminado`);
-      setTimeout(() => setExito(''), 2000);
+        // Eliminar de lista local
+        setUsuarios(usuarios.filter((x) => x.id !== u.id));
+        setExito(`${u.nombre} ha sido eliminado`);
+        setTimeout(() => setExito(''), 2000);
+      } catch (error) {
+        setError(error.message || 'Error al eliminar usuario');
+      }
     }
   };
 
-  const handleCambiarEstado = (u) => {
+  const handleCambiarEstado = async (u) => {
     const nuevoEstado = u.estado === 'activo' ? 'inactivo' : 'activo';
 
     if (u.rol === 'ADMIN' && u.id === usuario.id) {
@@ -302,17 +329,39 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
       return;
     }
 
-    // PLACEHOLDER: Aquí va la llamada a PUT /api/admin/usuarios/:id/estado
-    console.log('Cambiar estado de usuario:', { id: u.id, estado: nuevoEstado });
+    try {
+      // Llamar API
+      await api.users.changeStatus(u.id, nuevoEstado);
 
-    setUsuarios(
-      usuarios.map((x) =>
-        x.id === u.id ? { ...x, estado: nuevoEstado } : x
-      )
-    );
+      // Actualizar en lista local
+      setUsuarios(
+        usuarios.map((x) =>
+          x.id === u.id ? { ...x, estado: nuevoEstado } : x
+        )
+      );
 
-    setExito(`Usuario ${nuevoEstado === 'activo' ? 'activado' : 'desactivado'} exitosamente`);
-    setTimeout(() => setExito(''), 2000);
+      setExito(`Usuario ${nuevoEstado === 'activo' ? 'activado' : 'desactivado'} exitosamente`);
+      setTimeout(() => setExito(''), 2000);
+    } catch (error) {
+      setError(error.message || 'Error al cambiar estado');
+    }
+  };
+
+  // ==========================================
+  // CARGAR USUARIOS AL MONTAR COMPONENTE
+  // ==========================================
+  useEffect(() => {
+    cargarUsuarios();
+  }, []);
+
+  const cargarUsuarios = async () => {
+    try {
+      const response = await api.users.list();
+      // response es un array de usuarios
+      setUsuarios(response);
+    } catch (error) {
+      setError(error.message || 'Error al cargar usuarios');
+    }
   };
 
   // ==========================================
