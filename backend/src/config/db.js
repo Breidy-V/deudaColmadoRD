@@ -9,8 +9,11 @@ db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    user TEXT UNIQUE NOT NULL,
+    user TEXT UNIQUE,
+    email TEXT UNIQUE,
     password TEXT NOT NULL,
+    rol TEXT DEFAULT 'USER',
+    estado TEXT DEFAULT 'activo',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
