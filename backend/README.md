@@ -37,7 +37,7 @@ database.sqlite
 
 ```bash
 git clone <repo>
-cd api-node-sqlite
+cd backend
 npm install
 ```
 
