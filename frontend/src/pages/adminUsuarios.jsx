@@ -534,7 +534,7 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
                           aria-label={`${u.estado === 'activo' ? 'Desactivar' : 'Activar'} a ${u.nombre}`}
                           title={u.estado === 'activo' ? 'Desactivar' : 'Activar'}
                         >
-                          {u.estado === 'activo' ? '⊘' : '✓'}
+                          {u.estado === 'activo' ? '❌' : '✅'}
                         </button>
                         <button
                           className="btn-accion-eliminar"
