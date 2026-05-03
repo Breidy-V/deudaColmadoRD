@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import Login from './pages/login.jsx';
+import LoginPage from './pages/loginPage/loginPage.jsx';
 import Home from './pages/Home.jsx';
 import AdminModal from './pages/adminModal.jsx';
-import './App.css';
 
-function App() {
+export default function App() {
   const [usuario, setUsuario] = useState(null);
   const [mostrarAdminModal, setMostrarAdminModal] = useState(false);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem('usuarioFiadoRD');
@@ -18,6 +18,7 @@ function App() {
         localStorage.removeItem('usuarioFiadoRD');
       }
     }
+    setCargando(false);
   }, []);
 
   const handleLogin = (datosUsuario) => {
@@ -33,8 +34,10 @@ function App() {
     localStorage.removeItem('usuarioFiadoRD');
   };
 
+  if (cargando) return <div className="loading">Cargando FiadoRD...</div>;
+
   if (!usuario) {
-    return <Login onLogin={handleLogin} />;
+    return <LoginPage onLoginSuccess={handleLogin} />;
   }
 
   if (usuario.rol === 'ADMIN' && mostrarAdminModal) {
@@ -55,5 +58,3 @@ function App() {
     />
   );
 }
-
-export default App;

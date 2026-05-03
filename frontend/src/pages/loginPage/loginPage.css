@@ -1,5 +1,5 @@
 /* =========================================
-   VARIABLES DE COLOR 
+  VARIABLES DE COLOR 
 ========================================= */
 :root {
   --bg-principal: #F4F7F6;
@@ -20,7 +20,7 @@
 }
 
 /* =========================================
-   REGLAS GLOBALES DE ACCESIBILIDAD
+  REGLAS GLOBALES DE ACCESIBILIDAD
 ========================================= */
 button:focus-visible,
 input:focus-visible,
@@ -35,7 +35,7 @@ input::placeholder {
 }
 
 /* =========================================
-   CONTENEDOR PRINCIPAL DEL LOGIN
+  CONTENEDOR PRINCIPAL DEL LOGIN
 ========================================= */
 .login-container {
   width: 100%;
@@ -48,7 +48,7 @@ input::placeholder {
 }
 
 /* =========================================
-   HEADER DEL LOGIN
+  HEADER DEL LOGIN
 ========================================= */
 .login-header {
   background: linear-gradient(135deg, var(--color-primario) 0%, #1E40AF 100%);
@@ -84,7 +84,7 @@ input::placeholder {
 }
 
 /* =========================================
-   CONTENIDO PRINCIPAL
+  CONTENIDO PRINCIPAL
 ========================================= */
 .login-content {
   flex: 1;
@@ -95,10 +95,11 @@ input::placeholder {
 }
 
 /* =========================================
-   TABS PARA LOGIN/REGISTRO
+  TABS PARA LOGIN/REGISTRO
 ========================================= */
 .login-tabs {
-  display: none; /* Mostrar en versión completa si es necesario */
+  display: none;
+  /* Mostrar en versión completa si es necesario */
   gap: 12px;
   margin-bottom: 24px;
   border-bottom: 2px solid var(--borde-suave);
@@ -126,7 +127,7 @@ input::placeholder {
 }
 
 /* =========================================
-   FORMULARIO DE LOGIN
+  FORMULARIO DE LOGIN
 ========================================= */
 .login-form {
   background-color: var(--bg-tarjeta);
@@ -150,7 +151,7 @@ input::placeholder {
 }
 
 /* =========================================
-   GRUPOS DE FORMULARIO
+  GRUPOS DE FORMULARIO
 ========================================= */
 .form-group {
   display: flex;
@@ -173,7 +174,8 @@ input::placeholder {
   color: var(--texto-principal);
   background-color: var(--bg-principal);
   transition: border-color 0.3s ease;
-  min-height: 44px; /* Touch target accesible */
+  min-height: 44px;
+  /* Touch target accesible */
 }
 
 .form-group input:focus {
@@ -186,7 +188,7 @@ input::placeholder {
 }
 
 /* =========================================
-   MENSAJES DE ERROR
+  MENSAJES DE ERROR
 ========================================= */
 .error-message {
   background-color: var(--alerta-roja-bg);
@@ -200,7 +202,7 @@ input::placeholder {
 }
 
 /* =========================================
-   BOTONES
+  BOTONES
 ========================================= */
 .btn-login {
   width: 100%;
@@ -214,7 +216,8 @@ input::placeholder {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 48px; /* Touch target grande */
+  min-height: 48px;
+  /* Touch target grande */
 }
 
 .btn-login:hover {
@@ -233,7 +236,7 @@ input::placeholder {
 }
 
 /* =========================================
-   DIVISOR
+  DIVISOR
 ========================================= */
 .divider {
   text-align: center;
@@ -262,7 +265,7 @@ input::placeholder {
 }
 
 /* =========================================
-   BOTÓN GOOGLE OAUTH
+  BOTÓN GOOGLE OAUTH
 ========================================= */
 .btn-google {
   width: 100%;
@@ -293,7 +296,7 @@ input::placeholder {
 }
 
 /* =========================================
-   NOTA PARA ADMIN
+  NOTA PARA ADMIN
 ========================================= */
 .nota-admin {
   margin-top: 20px;
@@ -315,7 +318,7 @@ input::placeholder {
 }
 
 /* =========================================
-   FOOTER DEL LOGIN
+  FOOTER DEL LOGIN
 ========================================= */
 .login-footer {
   text-align: center;
@@ -324,72 +327,4 @@ input::placeholder {
   font-size: 0.85rem;
   border-top: 1px solid var(--borde-suave);
   background-color: var(--bg-tarjeta);
-}
-
-/* =========================================
-   RESPONSIVE DESIGN - TABLET
-========================================= */
-@media (min-width: 768px) {
-  .login-container {
-    justify-content: center;
-    align-items: center;
-  }
-
-  .login-header {
-    padding: 50px 40px 40px;
-  }
-
-  .login-logo span {
-    font-size: 3rem;
-  }
-
-  .login-logo h1 {
-    font-size: 2.5rem;
-  }
-
-  .login-form {
-    max-width: 450px;
-    padding: 40px 32px;
-  }
-}
-
-/* =========================================
-   RESPONSIVE DESIGN - DESKTOP
-========================================= */
-@media (min-width: 1024px) {
-  .login-container {
-    flex-direction: row;
-  }
-
-  .login-header {
-    width: 45%;
-    padding: 60px 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    border-radius: 0 20px 20px 0;
-  }
-
-  .login-logo span {
-    font-size: 4rem;
-  }
-
-  .login-logo h1 {
-    font-size: 3rem;
-  }
-
-  .login-subtitle {
-    font-size: 1.2rem;
-  }
-
-  .login-content {
-    width: 55%;
-    padding: 40px;
-  }
-
-  .login-form {
-    max-width: 100%;
-  }
 }
