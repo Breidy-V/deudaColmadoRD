@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   createPago,
   getPagos,
-  getPagosByDeuda,
+  getPagosByDeudaController,
   deletePago
 } from '../controllers/pagos.controller.js';
 
@@ -14,7 +14,7 @@ router.use(verifyToken);
 
 router.post('/', createPago);
 router.get('/', getPagos);
-router.get('/deuda/:id', getPagosByDeuda);
+router.get('/deuda/:id', getPagosByDeudaController);
 router.delete('/:id', deletePago);
 
 export default router;
