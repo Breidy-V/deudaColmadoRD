@@ -125,8 +125,53 @@ export const usersAPI = {
   },
 };
 
+
+
+
+
+
+
+// ============ CLIENTES ============
+export const clientesAPI = {
+  create: async (nombre, apellido, telefono, direccion) => {
+    const response = await fetch(`${API_URL}/clientes`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify({ nombre, apellido, telefono, direccion }),
+    });
+    return handleResponse(response);
+  },
+};
+
+// ============ DEUDAS ============
+export const deudasAPI = {
+  // 🔹 Crear deuda
+  create: async (id_cliente, monto) => {
+    const response = await fetch(`${API_URL}/deudas`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify({
+        id_cliente,
+        monto_total: monto
+      }),
+    });
+    return handleResponse(response);
+  },
+
+  // 🔹 Listar deudas
+  list: async () => {
+    const response = await fetch(`${API_URL}/deudas`, {
+      method: 'GET',
+      headers: getHeaders(true),
+    });
+    return handleResponse(response);
+  },
+};
+
 // ============ EXPORTAR TODO ============
 export const api = {
   auth: authAPI,
   users: usersAPI,
+  deudas: deudasAPI,
+  clientes: clientesAPI,
 };

@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Home.css';
+import { api } from '../services/api';
+
 
 function Home({ usuario, onLogout, onOpenAdminModal }) {
   // ==========================================
@@ -10,16 +12,20 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
     negocio: "FiadoRD",
   });
 
-  const [totalDeudas] = useState(15450.00);
-  const [deudores] = useState([
-    { id: 1, nombre: "Juan Pérez", monto: 2500, diasVencido: 18 },
-    { id: 2, nombre: "María Gómez", monto: 800, diasVencido: 5 },
-    { id: 3, nombre: "Pedro Díaz", monto: 4500, diasVencido: 20 },
-  ]);
+  const [deudores, setDeudores] = useState([]);
+  const [totalDeudas, setTotalDeudas] = useState(0);
 
   const [mostrarModalAdd, setMostrarModalAdd] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [mostrarMenuPerfil, setMostrarMenuPerfil] = useState(false);
+
+  const [formCliente, setFormCliente] = useState({
+  nombre: '',
+  apellido: '',
+  telefono: '',
+  direccion: '',
+  deuda: ''
+  });
 
   // ==========================================
   // MANEJADOR DE CERRAR SESIÓN
@@ -34,6 +40,60 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
     }
   };
 
+  const handleCrearCliente = async (e) => {
+  e.preventDefault();
+
+  try {
+    // 🔹 1. Crear cliente
+    const nuevoCliente = await api.clientes.create(
+      formCliente.nombre,
+      formCliente.apellido,
+      formCliente.telefono,
+      formCliente.direccion
+    );
+
+    // 🔹 2. Crear deuda si existe
+    const monto = Number(formCliente.deuda);
+
+// 🔥 obtener el id correctamente
+const idCliente =
+  nuevoCliente?.cliente?.id_cliente ||
+  nuevoCliente?.cliente?.id ||
+  nuevoCliente?.id_cliente ||
+  nuevoCliente?.id;
+
+if (!idCliente) {
+  console.error("No se encontró el ID del cliente");
+  alert("Error interno: ID no encontrado");
+  return;
+}
+
+// 🔥 BONUS: crear deuda SIEMPRE (aunque sea 0)
+await api.deudas.create(
+  idCliente,
+  !isNaN(monto) && monto > 0 ? monto : 0
+);
+
+    alert('Cliente creado correctamente');
+
+    setMostrarModalAdd(false);
+
+    setFormCliente({
+      nombre: '',
+      apellido: '',
+      direccion: '',
+      telefono: '',
+      deuda: ''
+    });
+
+    cargarDeudas();
+
+  } catch (error) {
+    console.error(error);
+    alert('Error al crear cliente');
+  }
+};
+
   // ==========================================
   // MANEJADOR PARA IR A ADMINISTRACIÓN (ADMIN)
   // ==========================================
@@ -41,6 +101,36 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
     setMostrarMenuPerfil(false);
     onOpenAdminModal?.();
   };
+
+  const handleChangeCliente = (e) => {
+  setFormCliente({
+    ...formCliente,
+    [e.target.name]: e.target.value,
+  });
+  };
+
+  
+  useEffect(() => {
+  cargarDeudas();
+}, []);
+
+const cargarDeudas = async () => {
+  try {
+    const data = await api.deudas.list();
+
+    setDeudores(data);
+
+    const total = data.reduce(
+      (acc, item) => acc + (item.saldo_pendiente || 0),
+      0
+    );
+
+    setTotalDeudas(total);
+
+  } catch (error) {
+    console.error('Error cargando deudas:', error);
+  }
+};
 
   return (
     <div className="mobile-app-container">
@@ -152,7 +242,7 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
         <div className="deudores-contenedor" role="list">
           {deudores.map((cliente) => (
             <div 
-              key={cliente.id} 
+              key={cliente.id_deuda} 
               className={`tarjeta-cliente ${cliente.diasVencido > 15 ? 'alerta-roja' : 'alerta-naranja'}`}
               role="listitem"
             >
@@ -161,13 +251,13 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
                 onClick={() => setClienteSeleccionado(cliente)}
                 aria-label={`Gestionar cuenta de ${cliente.nombre}`}
               >
-                <strong>{cliente.nombre}</strong>
-                <span>Hace {cliente.diasVencido} días</span>
+                <strong>{cliente.nombre} {cliente.apellido}</strong>
+                <span>Deuda activa</span>
               </button>
               
               <div className="acciones-cliente">
                 <div className="monto-cliente" aria-hidden="true">
-                  <strong>${cliente.monto}</strong>
+                  <strong>${cliente.saldo_pendiente}</strong>
                 </div>
                 <button className="btn-eliminar" aria-label={`Eliminar a ${cliente.nombre} del sistema`}>
                   🗑️
@@ -195,12 +285,47 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
         <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-add">
           <div className="modal-content">
             <h2 id="titulo-modal-add">Añadir Nuevo Cliente</h2>
-            <form className="formulario-modal" onSubmit={(e) => e.preventDefault()}>
-              <input type="text" placeholder="Nombre completo" required aria-label="Nombre completo" />
-              <input type="date" required aria-label="Fecha de registro" />
-              <input type="text" placeholder="Dirección" required aria-label="Dirección" />
-              <input type="tel" placeholder="Teléfono" required aria-label="Número de teléfono" />
-              <input type="number" placeholder="Deuda Inicial (Opcional)" aria-label="Deuda inicial opcional" />
+            <form className="formulario-modal" onSubmit={handleCrearCliente}>
+              <input
+  type="text"
+  name="nombre"
+  placeholder="Nombre"
+  value={formCliente.nombre}
+  onChange={handleChangeCliente}
+  required
+/>
+<input
+  type="text"
+  name="apellido"
+  placeholder="Apellido"
+  value={formCliente.apellido}
+  onChange={handleChangeCliente}
+  required
+/>
+              <input type="date" />
+<input
+  type="text"
+  name="direccion"
+  placeholder="Dirección"
+  value={formCliente.direccion}
+  onChange={handleChangeCliente}
+  required
+/>
+<input
+  type="tel"
+  name="telefono"
+  placeholder="Teléfono"
+  value={formCliente.telefono}
+  onChange={handleChangeCliente}
+  required
+/>
+              <input
+  type="number"
+  name="deuda"
+  placeholder="Deuda Inicial (Opcional)"
+  value={formCliente.deuda}
+  onChange={handleChangeCliente}
+/>
               
               <div className="modal-botones">
                 <button type="button" className="btn-cancelar" onClick={() => setMostrarModalAdd(false)}>Cancelar</button>
@@ -218,7 +343,7 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
         <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-gestion">
           <div className="modal-content">
             <h2 id="titulo-modal-gestion">Gestionar: {clienteSeleccionado.nombre}</h2>
-            <p className="deuda-actual">Deuda Total: <strong>${clienteSeleccionado.monto}</strong></p>
+            <p className="deuda-actual">Deuda Total: <strong>${clienteSeleccionado.saldo_pendiente}</strong></p>
             
             <div className="historial-mini">
               <p>Último movimiento: Fiado (hace {clienteSeleccionado.diasVencido} días)</p>
