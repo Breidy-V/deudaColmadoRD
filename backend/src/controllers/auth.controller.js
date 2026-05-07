@@ -15,7 +15,7 @@ export const login = async (req, res) => {
     const valid = await bcrypt.compare(password, dbUser.password);
 
     if (!valid) {
-      return res.status(400).json({ error: 'Password incorrecto' });
+      return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
     const token = generateToken(dbUser);

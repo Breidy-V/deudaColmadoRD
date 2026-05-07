@@ -1,21 +1,21 @@
-import LoginForm from '../../assets/components/Auth/loginForm';
-import { useAuthForm } from '../../hooks/useAuthForm';
-import { api } from '../../services/api';
-import './loginPage.css';
+import LoginForm from "../../assets/components/Auth/loginForm";
+import { useAuthForm } from "../../hooks/useAuthForm";
+import { api } from "../../services/api";
+import "./loginPage.css";
 
-export default function LoginPage ({ onLoginSuccess }){
+export default function LoginPage({ onLoginSuccess }) {
   const handleLoginSubmit = async (data) => {
     const response = await api.auth.login(data.usuarioEmail, data.contrasena);
-    
+
     if (response.token) {
-      localStorage.setItem('usuarioFiadoRD', JSON.stringify(response));
+      localStorage.setItem("usuarioFiadoRD", JSON.stringify(response));
       onLoginSuccess(response);
     }
   };
 
   const { formData, handleChange, handleSubmit, error, loading } = useAuthForm(
-    { usuarioEmail: '', contrasena: '' },
-    handleLoginSubmit
+    { usuarioEmail: "", contrasena: "" },
+    handleLoginSubmit,
   );
 
   return (
@@ -24,9 +24,9 @@ export default function LoginPage ({ onLoginSuccess }){
         <h1>FiadoRD</h1>
         <p>Gestión de Colmados</p>
       </header>
-      
+
       <main className="login-content">
-        <LoginForm 
+        <LoginForm
           formData={formData}
           onChange={handleChange}
           onSubmit={handleSubmit}
@@ -34,7 +34,9 @@ export default function LoginPage ({ onLoginSuccess }){
           loading={loading}
         />
       </main>
+      <footer className="login-footer">
+        <p>&copy; 2026 FiadoRD - Gestión de Colmados</p>
+      </footer>
     </div>
   );
-};
-
+}

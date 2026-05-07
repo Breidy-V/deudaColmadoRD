@@ -327,4 +327,5 @@ input::placeholder {
   font-size: 0.85rem;
   border-top: 1px solid var(--borde-suave);
   background-color: var(--bg-tarjeta);
+  margin-top: auto;
 }
