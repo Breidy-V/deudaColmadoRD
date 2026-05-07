@@ -556,3 +556,154 @@ body {
 .btn-menu-item.admin:hover {
   background-color: rgba(29, 78, 216, 0.1);
 }
+
+/* =========================================
+   ESTILOS PARA ICONOS LUCIDE
+   ========================================= */
+.buscador-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--texto-terciario);
+}
+
+.buscador-container {
+  position: relative;
+  padding: 0 20px;
+  margin-bottom: 25px;
+}
+
+.buscador-container .buscador-input {
+  padding-left: 44px;
+}
+
+.btn-accion svg, .btn-menu-item svg, .btn-gestion svg, .btn-cerrar-modal svg {
+  flex-shrink: 0;
+}
+
+/* =========================================
+   ESTILOS MODAL GESTIONAR DEUDA
+   ========================================= */
+.btn-cerrar-flotante {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--texto-terciario);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.btn-cerrar-flotante:hover {
+  background: var(--borde-suave);
+  color: var(--texto-principal);
+}
+
+.deuda-resumen {
+  background: var(--bg-principal);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--borde-suave);
+}
+
+.deuda-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.deuda-item:not(:last-child) {
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.deuda-item.saldo {
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 2px solid var(--borde-suave);
+}
+
+.deuda-label {
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+}
+
+.deuda-value {
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.deuda-value.pagado {
+  color: #059669;
+}
+
+.modal-monto-input {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: var(--bg-tarjeta);
+  border: 2px solid var(--color-primario);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.input-prefix {
+  padding: 14px;
+  background: var(--bg-principal);
+  color: var(--texto-secundario);
+  font-weight: 600;
+  border-right: 1px solid var(--borde-suave);
+}
+
+.monto-input {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--texto-principal);
+  background: transparent;
+}
+
+.monto-input:focus {
+  outline: none;
+}
+
+.btn-confirmar-monto {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: var(--color-primario);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-confirmar-monto:hover:not(:disabled) {
+  background: var(--color-primario-hover);
+}
+
+.btn-confirmar-monto:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-gestion.cancelar {
+  background: var(--texto-secundario);
+}

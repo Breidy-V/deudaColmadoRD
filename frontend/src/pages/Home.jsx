@@ -2,36 +2,70 @@ import { useState, useEffect } from 'react';
 import './Home.css';
 import { api } from '../services/api';
 import { useAlert } from '../components/Alert.jsx';
+import {
+  Header,
+  ResumenFinanciero,
+  Buscador,
+  BotonesAccion,
+  ListaDeudores,
+  ModalAddCliente,
+  ModalGestionarDeuda,
+  Footer
+} from '../components/home';
 
+const INTEGRANTES = [
+  'Jose Ismael Garcia', 
+  'Bienvenido Quezada', 
+  'Bryan Ramirez', 
+  'Deivy Abreu', 
+  'Jose Manuel de la Cruz', 
+  'Yordani Guerrero', 
+  'Gregory Alfonso'
+];
 
-function Home({ usuario, onLogout, onOpenAdminModal }) {
+export default function Home({ usuario, onLogout, onOpenAdminModal }) {
   const { showAlert } = useAlert();
-  // ==========================================
-  // ESTADO DEL COMPONENTE HOME
-  // ==========================================
+  
   const [usuarioApp] = useState({
     nombre: usuario?.nombre || "Usuario",
     negocio: "FiadoRD",
   });
 
   const [deudores, setDeudores] = useState([]);
-  const [totalDeudas, setTotalDeudas] = useState(0);
-
+  const [busqueda, setBusqueda] = useState('');
   const [mostrarModalAdd, setMostrarModalAdd] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [mostrarMenuPerfil, setMostrarMenuPerfil] = useState(false);
 
   const [formCliente, setFormCliente] = useState({
-  nombre: '',
-  apellido: '',
-  telefono: '',
-  direccion: '',
-  deuda: ''
+    nombre: '',
+    apellido: '',
+    telefono: '',
+    direccion: '',
+    deuda: ''
   });
 
-  // ==========================================
-  // MANEJADOR DE CERRAR SESIÓN
-  // ==========================================
+  useEffect(() => {
+    cargarDeudas();
+  }, []);
+
+  useEffect(() => {
+    const data = busqueda.trim()
+      ? deudores.filter(c => 
+          `${c.nombre} ${c.apellido}`.toLowerCase().includes(busqueda.toLowerCase())
+        )
+      : deudores;
+  }, [busqueda, deudores]);
+
+  const cargarDeudas = async () => {
+    try {
+      const data = await api.deudas.list();
+      setDeudores(data);
+    } catch (error) {
+      console.error('Error cargando deudas:', error);
+    }
+  };
+
   const handleCerrarSesion = async () => {
     const confirmar = await showAlert({
       type: 'confirm',
@@ -45,384 +79,285 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
     }
   };
 
-  const handleCrearCliente = async (e) => {
-  e.preventDefault();
-
-  try {
-    // 🔹 1. Crear cliente
-    const nuevoCliente = await api.clientes.create(
-      formCliente.nombre,
-      formCliente.apellido,
-      formCliente.telefono,
-      formCliente.direccion
-    );
-
-    // 🔹 2. Crear deuda si existe
-    const monto = Number(formCliente.deuda);
-
-// 🔥 obtener el id correctamente
-const idCliente =
-  nuevoCliente?.cliente?.id_cliente ||
-  nuevoCliente?.cliente?.id ||
-  nuevoCliente?.id_cliente ||
-  nuevoCliente?.id;
-
-if (!idCliente) {
-  console.error("No se encontró el ID del cliente");
-  await showAlert({
-    type: 'error',
-    title: 'Error',
-    message: 'Error interno: ID no encontrado',
-    confirmText: 'Aceptar'
-  });
-  return;
-}
-
-// 🔥 BONUS: crear deuda SIEMPRE (aunque sea 0)
-await api.deudas.create(
-  idCliente,
-  !isNaN(monto) && monto > 0 ? monto : 0
-);
-
-    await showAlert({
-      type: 'success',
-      title: 'Éxito',
-      message: 'Cliente creado correctamente',
-      confirmText: 'Aceptar'
-    });
-
-    setMostrarModalAdd(false);
-
-    setFormCliente({
-      nombre: '',
-      apellido: '',
-      direccion: '',
-      telefono: '',
-      deuda: ''
-    });
-
-    cargarDeudas();
-
-  } catch (error) {
-    console.error(error);
-    await showAlert({
-      type: 'error',
-      title: 'Error',
-      message: 'Error al crear cliente',
-      confirmText: 'Aceptar'
-    });
-  }
-};
-
-  // ==========================================
-  // MANEJADOR PARA IR A ADMINISTRACIÓN (ADMIN)
-  // ==========================================
   const handleIrAAdministracion = () => {
     setMostrarMenuPerfil(false);
     onOpenAdminModal?.();
   };
 
-  const handleChangeCliente = (e) => {
-  setFormCliente({
-    ...formCliente,
-    [e.target.name]: e.target.value,
-  });
+  const handleCrearCliente = async (e) => {
+    e.preventDefault();
+
+    try {
+      const nuevoCliente = await api.clientes.create(
+        formCliente.nombre,
+        formCliente.apellido,
+        formCliente.telefono,
+        formCliente.direccion
+      );
+
+      const monto = Number(formCliente.deuda);
+
+      const idCliente =
+        nuevoCliente?.cliente?.id_cliente ||
+        nuevoCliente?.cliente?.id ||
+        nuevoCliente?.id_cliente ||
+        nuevoCliente?.id;
+
+      if (!idCliente) {
+        await showAlert({
+          type: 'error',
+          title: 'Error',
+          message: 'Error interno: ID no encontrado',
+          confirmText: 'Aceptar'
+        });
+        return;
+      }
+
+      await api.deudas.create(
+        idCliente,
+        !isNaN(monto) && monto > 0 ? monto : 0
+      );
+
+      await showAlert({
+        type: 'success',
+        title: 'Éxito',
+        message: 'Cliente creado correctamente',
+        confirmText: 'Aceptar'
+      });
+
+      setMostrarModalAdd(false);
+      setFormCliente({
+        nombre: '',
+        apellido: '',
+        direccion: '',
+        telefono: '',
+        deuda: ''
+      });
+
+      cargarDeudas();
+
+    } catch (error) {
+      console.error(error);
+      await showAlert({
+        type: 'error',
+        title: 'Error',
+        message: 'Error al crear cliente',
+        confirmText: 'Aceptar'
+      });
+    }
   };
 
-  
-  useEffect(() => {
-  cargarDeudas();
-}, []);
-
-const cargarDeudas = async () => {
-  try {
-    const data = await api.deudas.list();
-
-    setDeudores(data);
-
-    const total = data.reduce(
-      (acc, item) => acc + (item.saldo_pendiente || 0),
-      0
-    );
-
-    setTotalDeudas(total);
-
-  } catch (error) {
-    console.error('Error cargando deudas:', error);
-  }
-};
-
-const handleEliminarCliente = async (e, idCliente) => {
-  e.stopPropagation();
-  
-  const confirmar = await showAlert({
-    type: 'confirm',
-    title: 'Eliminar Cliente',
-    message: '¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.',
-    confirmText: 'Sí, eliminar',
-    cancelText: 'Cancelar'
-  });
-
-  if (!confirmar) {
-    return;
-  }
-
-  try {
-    await api.clientes.delete(idCliente);
-    await showAlert({
-      type: 'success',
-      title: 'Éxito',
-      message: 'Cliente eliminado correctamente',
-      confirmText: 'Aceptar'
+  const handleChangeCliente = (e) => {
+    setFormCliente({
+      ...formCliente,
+      [e.target.name]: e.target.value,
     });
-    cargarDeudas();
-  } catch (error) {
-    console.error(error);
-    await showAlert({
-      type: 'error',
-      title: 'Error',
-      message: 'Error al eliminar cliente',
-      confirmText: 'Aceptar'
+  };
+
+  const handleEliminarCliente = async (e, idCliente) => {
+    e.stopPropagation();
+    
+    const confirmar = await showAlert({
+      type: 'confirm',
+      title: 'Eliminar Cliente',
+      message: '¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar'
     });
-  }
-};
+
+    if (!confirmar) return;
+
+    try {
+      await api.clientes.delete(idCliente);
+      await showAlert({
+        type: 'success',
+        title: 'Éxito',
+        message: 'Cliente eliminado correctamente',
+        confirmText: 'Aceptar'
+      });
+      cargarDeudas();
+    } catch (error) {
+      console.error(error);
+      await showAlert({
+        type: 'error',
+        title: 'Error',
+        message: 'Error al eliminar cliente',
+        confirmText: 'Aceptar'
+      });
+    }
+  };
+
+  const handleSelectCliente = (cliente) => {
+    setClienteSeleccionado(cliente);
+  };
+
+  const handleSaldar = async (monto) => {
+    if (!clienteSeleccionado?.id_deuda) return;
+
+    const confirmar = await showAlert({
+      type: 'confirm',
+      title: 'Saldar Deuda',
+      message: `¿Confirmas el pago de $${monto.toFixed(2)} para saldar esta deuda?`,
+      confirmText: 'Sí, pagar',
+      cancelText: 'Cancelar'
+    });
+
+    if (!confirmar) return;
+
+    try {
+      await api.pagos.create(
+        clienteSeleccionado.id_deuda,
+        monto,
+        'efectivo',
+        'Pago para saldar deuda'
+      );
+
+      await showAlert({
+        type: 'success',
+        title: 'Éxito',
+        message: 'Deuda saldada correctamente',
+        confirmText: 'Aceptar'
+      });
+
+      setClienteSeleccionado(null);
+      cargarDeudas();
+    } catch (error) {
+      console.error(error);
+      await showAlert({
+        type: 'error',
+        title: 'Error',
+        message: 'Error al saldar la deuda',
+        confirmText: 'Aceptar'
+      });
+    }
+  };
+
+  const handleAbonar = async (monto) => {
+    if (!clienteSeleccionado?.id_deuda) return;
+
+    try {
+      await api.pagos.create(
+        clienteSeleccionado.id_deuda,
+        monto,
+        'efectivo',
+        'Abono a deuda'
+      );
+
+      await showAlert({
+        type: 'success',
+        title: 'Éxito',
+        message: `Abono de $${monto.toFixed(2)} registrado correctamente`,
+        confirmText: 'Aceptar'
+      });
+
+      setClienteSeleccionado(null);
+      cargarDeudas();
+    } catch (error) {
+      console.error(error);
+      await showAlert({
+        type: 'error',
+        title: 'Error',
+        message: 'Error al registrar el abono',
+        confirmText: 'Aceptar'
+      });
+    }
+  };
+
+  const handleSumar = async (monto) => {
+    if (!clienteSeleccionado?.id_cliente) return;
+
+    try {
+      await api.deudas.create(
+        clienteSeleccionado.id_cliente,
+        monto,
+        'Nueva deuda agregada'
+      );
+
+      await showAlert({
+        type: 'success',
+        title: 'Éxito',
+        message: `Nueva deuda de $${monto.toFixed(2)} registrada`,
+        confirmText: 'Aceptar'
+      });
+
+      setClienteSeleccionado(null);
+      cargarDeudas();
+    } catch (error) {
+      console.error(error);
+      await showAlert({
+        type: 'error',
+        title: 'Error',
+        message: 'Error al agregar deuda',
+        confirmText: 'Aceptar'
+      });
+    }
+  };
+
+  const handleNuevoFiado = async () => {
+    await showAlert({ type: 'info', title: 'Nuevo Fiado', message: 'Funcionalidad en desarrollo' });
+  };
+
+  const handleResumenCaja = async () => {
+    await showAlert({ type: 'info', title: 'Resumen Caja', message: 'Funcionalidad en desarrollo' });
+  };
+
+  const totalDeudas = deudores.reduce((acc, item) => acc + (item.saldo_pendiente || 0), 0);
+
+  const deudoresFiltrados = busqueda.trim()
+    ? deudores.filter(c => 
+        `${c.nombre} ${c.apellido}`.toLowerCase().includes(busqueda.toLowerCase())
+      )
+    : deudores;
 
   return (
     <div className="mobile-app-container">
-      
-      {/* ==========================================
-          HEADER CON PERFIL DE USUARIO 
-          ========================================== */}
-      <header className="header-resumen">
-        <div className="top-nav">
-          <div className="info-negocio">
-            <span aria-hidden="true">🏪</span>
-            <h2>{usuarioApp.negocio}</h2>
-          </div>
-          
-          <div className="perfil-usuario">
-            <button 
-              className="btn-avatar" 
-              onClick={() => setMostrarMenuPerfil(!mostrarMenuPerfil)}
-              aria-label="Opciones de cuenta"
-              title={`${usuarioApp.nombre} (${usuario?.rol})`}
-            >
-              {usuarioApp.nombre.charAt(0).toUpperCase()}
-            </button>
-            
-            {mostrarMenuPerfil && (
-              <div className="menu-desplegable">
-                <p className="saludo">Hola, <strong>{usuarioApp.nombre}</strong></p>
-                <p className="rol-usuario">
-                  {usuario?.rol === 'ADMIN' ? '👑 Administrador' : '👤 Usuario'}
-                </p>
-                <hr />
-                
-                {/* Opción para ADMIN: Ir a Administración */}
-                {usuario?.rol === 'ADMIN' && (
-                  <>
-                    <button 
-                      className="btn-menu-item admin"
-                      onClick={handleIrAAdministracion}
-                      aria-label="Ir a panel de administración"
-                    >
-                      ⚙️ Panel de Administración
-                    </button>
-                    <hr />
-                  </>
-                )}
+      <Header
+        negocio={usuarioApp.negocio}
+        nombre={usuarioApp.nombre}
+        rol={usuario?.rol}
+        mostrarMenu={mostrarMenuPerfil}
+        onToggleMenu={() => setMostrarMenuPerfil(!mostrarMenuPerfil)}
+        onCerrarSesion={handleCerrarSesion}
+        onIrAdministracion={handleIrAAdministracion}
+      >
+        <ResumenFinanciero total={totalDeudas} />
+      </Header>
 
-                <button className="btn-menu-item">⚙️ Configuración</button>
-                <button 
-                  className="btn-menu-item salir"
-                  onClick={handleCerrarSesion}
-                  aria-label="Cerrar sesión"
-                >
-                  🚪 Cerrar Sesión
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="resumen-financiero">
-          <p>Total de Deudas Activas</p>
-          <h1>${totalDeudas.toFixed(2)}</h1>
-        </div>
-      </header>
-
-      {/* ==========================================
-          CONTROLES IZQUIERDA (Buscador y Botones)
-          ========================================== */}
       <div className="controles-izquierda">
-        <div className="buscador-container">
-          <input 
-            type="search" 
-            placeholder="Buscar cliente..." 
-            className="buscador-input" 
-            aria-label="Buscar clientes por nombre"
-          />
-        </div>
-
-        <div className="botones-grid">
-          <button 
-            className="btn-accion" 
-            onClick={() => setMostrarModalAdd(true)} 
-            aria-label="Añadir nuevo cliente"
-          >
-            <span aria-hidden="true">➕</span> Añadir Cliente
-          </button>
-          <button className="btn-accion" aria-label="Registrar nuevo fiado">
-            <span aria-hidden="true">📝</span> Nuevo Fiado
-          </button>
-          <button className="btn-accion" aria-label="Ver resumen de caja">
-            <span aria-hidden="true">💰</span> Resumen Caja
-          </button>
-        </div>
+        <Buscador 
+          value={busqueda} 
+          onChange={(e) => setBusqueda(e.target.value)} 
+        />
+        <BotonesAccion 
+          onAddCliente={() => setMostrarModalAdd(true)}
+          onNuevoFiado={handleNuevoFiado}
+          onResumenCaja={handleResumenCaja}
+        />
       </div>
 
-      {/* ==========================================
-          LISTA DE DEUDORES (Derecha en PC)
-          ========================================== */}
-      <section className="lista-deudores" aria-labelledby="titulo-lista">
-        <div className="encabezado-lista">
-          <h3 id="titulo-lista">Estado de Cuentas</h3>
-          <select className="filtro-select" aria-label="Filtrar lista de deudores">
-            <option>Mayor a menor deuda</option>
-            <option>Por proximidad</option>
-            <option>Fecha</option>
-          </select>
-        </div>
+      <ListaDeudores 
+        deudores={deudoresFiltrados}
+        onSelectCliente={handleSelectCliente}
+        onEliminarCliente={handleEliminarCliente}
+      />
 
-        <div className="deudores-contenedor" role="list">
-          {deudores.map((cliente) => (
-            <div 
-              key={cliente.id_deuda} 
-              className={`tarjeta-cliente ${cliente.diasVencido > 15 ? 'alerta-roja' : 'alerta-naranja'}`}
-              role="listitem"
-            >
-              <button 
-                className="btn-info-cliente" 
-                onClick={() => setClienteSeleccionado(cliente)}
-                aria-label={`Gestionar cuenta de ${cliente.nombre}`}
-              >
-                <strong>{cliente.nombre} {cliente.apellido}</strong>
-                <span>Deuda activa</span>
-              </button>
-              
-              <div className="acciones-cliente">
-                <div className="monto-cliente" aria-hidden="true">
-                  <strong>${cliente.saldo_pendiente}</strong>
-                </div>
-                <button 
-                  className="btn-eliminar" 
-                  aria-label={`Eliminar a ${cliente.nombre} del sistema`}
-                  onClick={(e) => handleEliminarCliente(e, cliente.id_cliente)}
-                >
-                  🗑️
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Footer />
 
-      {/* ==========================================
-          FOOTER DEL EQUIPO
-          ========================================== */}
-      <footer className="footer-equipo">
-        <p>&copy; 2026 FiadoRD - Gestión de Colmados</p>
-        <p className="integrantes">
-          Desarrollado por: Jose Ismael Garcia, Bienvenido Quezada, Bryan Ramirez, Deivy Abreu, Jose Manuel de la Cruz, Yordani Guerrero y Gregory Alfonso.
-        </p>
-      </footer>
+      <ModalAddCliente
+        mostrar={mostrarModalAdd}
+        form={formCliente}
+        onChange={handleChangeCliente}
+        onSubmit={handleCrearCliente}
+        onClose={() => setMostrarModalAdd(false)}
+      />
 
-      {/* ==========================================
-          VENTANA EMERGENTE: AÑADIR CLIENTE 
-          ========================================== */}
-      {mostrarModalAdd && (
-        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-add">
-          <div className="modal-content">
-            <h2 id="titulo-modal-add">Añadir Nuevo Cliente</h2>
-            <form className="formulario-modal" onSubmit={handleCrearCliente}>
-              <input
-  type="text"
-  name="nombre"
-  placeholder="Nombre"
-  value={formCliente.nombre}
-  onChange={handleChangeCliente}
-  required
-/>
-<input
-  type="text"
-  name="apellido"
-  placeholder="Apellido"
-  value={formCliente.apellido}
-  onChange={handleChangeCliente}
-  required
-/>
-              <input type="date" />
-<input
-  type="text"
-  name="direccion"
-  placeholder="Dirección"
-  value={formCliente.direccion}
-  onChange={handleChangeCliente}
-  required
-/>
-<input
-  type="tel"
-  name="telefono"
-  placeholder="Teléfono"
-  value={formCliente.telefono}
-  onChange={handleChangeCliente}
-  required
-/>
-              <input
-  type="number"
-  name="deuda"
-  placeholder="Deuda Inicial (Opcional)"
-  value={formCliente.deuda}
-  onChange={handleChangeCliente}
-/>
-              
-              <div className="modal-botones">
-                <button type="button" className="btn-cancelar" onClick={() => setMostrarModalAdd(false)}>Cancelar</button>
-                <button type="submit" className="btn-guardar">Registrar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ==========================================
-          VENTANA EMERGENTE: GESTIONAR DEUDA CLIENTE 
-          ========================================== */}
-      {clienteSeleccionado && (
-        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-gestion">
-          <div className="modal-content">
-            <h2 id="titulo-modal-gestion">Gestionar: {clienteSeleccionado.nombre}</h2>
-            <p className="deuda-actual">Deuda Total: <strong>${clienteSeleccionado.saldo_pendiente}</strong></p>
-            
-            <div className="historial-mini">
-              <p>Último movimiento: Fiado (hace {clienteSeleccionado.diasVencido} días)</p>
-            </div>
-
-            <div className="botones-gestion">
-              <button className="btn-gestion saldar">Saldar Completo</button>
-              <button className="btn-gestion abonar">Abonar Cantidad</button>
-              <button className="btn-gestion sumar">Sumar a la Deuda</button>
-            </div>
-
-            <button className="btn-cerrar-modal" onClick={() => setClienteSeleccionado(null)}>
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
-
+      <ModalGestionarDeuda
+        cliente={clienteSeleccionado}
+        onClose={() => setClienteSeleccionado(null)}
+        onSaldar={handleSaldar}
+        onAbonar={handleAbonar}
+        onSumar={handleSumar}
+      />
     </div>
   );
 }
-
-export default Home;
