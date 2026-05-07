@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import AdminUsuarios from './adminUsuarios'; 
 import './adminModal.css';
+import { useAlert } from '../components/Alert.jsx';
 
 function AdminModal({ usuario, onBack, onLogout, onClose }) {
+  const { showAlert } = useAlert();
   // ==========================================
   // ESTADO DEL MODAL ADMIN
   // ==========================================
@@ -28,8 +30,15 @@ function AdminModal({ usuario, onBack, onLogout, onClose }) {
   };
 
   // Cerrar sesión
-  const handleCerrarSesion = () => {
-    if (window.confirm('¿Deseas cerrar sesión?')) {
+  const handleCerrarSesion = async () => {
+    const confirmar = await showAlert({
+      type: 'confirm',
+      title: 'Cerrar Sesión',
+      message: '¿Deseas cerrar sesión?',
+      confirmText: 'Sí, cerrar',
+      cancelText: 'Cancelar'
+    });
+    if (confirmar) {
       onLogout();
     }
   };

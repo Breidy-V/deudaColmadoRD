@@ -141,6 +141,14 @@ export const clientesAPI = {
     });
     return handleResponse(response);
   },
+
+  delete: async (id) => {
+    const response = await fetch(`${API_URL}/clientes/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(true),
+    });
+    return handleResponse(response);
+  },
 };
 
 // ============ DEUDAS ============

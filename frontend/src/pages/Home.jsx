@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import './Home.css';
 import { api } from '../services/api';
+import { useAlert } from '../components/Alert.jsx';
 
 
 function Home({ usuario, onLogout, onOpenAdminModal }) {
+  const { showAlert } = useAlert();
   // ==========================================
   // ESTADO DEL COMPONENTE HOME
   // ==========================================
@@ -30,12 +32,15 @@ function Home({ usuario, onLogout, onOpenAdminModal }) {
   // ==========================================
   // MANEJADOR DE CERRAR SESIÓN
   // ==========================================
-  const handleCerrarSesion = () => {
-    if (
-      window.confirm(
-        '¿Estás seguro de que deseas cerrar sesión?'
-      )
-    ) {
+  const handleCerrarSesion = async () => {
+    const confirmar = await showAlert({
+      type: 'confirm',
+      title: 'Cerrar Sesión',
+      message: '¿Estás seguro de que deseas cerrar sesión?',
+      confirmText: 'Sí, cerrar',
+      cancelText: 'Cancelar'
+    });
+    if (confirmar) {
       onLogout();
     }
   };
@@ -64,7 +69,12 @@ const idCliente =
 
 if (!idCliente) {
   console.error("No se encontró el ID del cliente");
-  alert("Error interno: ID no encontrado");
+  await showAlert({
+    type: 'error',
+    title: 'Error',
+    message: 'Error interno: ID no encontrado',
+    confirmText: 'Aceptar'
+  });
   return;
 }
 
@@ -74,7 +84,12 @@ await api.deudas.create(
   !isNaN(monto) && monto > 0 ? monto : 0
 );
 
-    alert('Cliente creado correctamente');
+    await showAlert({
+      type: 'success',
+      title: 'Éxito',
+      message: 'Cliente creado correctamente',
+      confirmText: 'Aceptar'
+    });
 
     setMostrarModalAdd(false);
 
@@ -90,7 +105,12 @@ await api.deudas.create(
 
   } catch (error) {
     console.error(error);
-    alert('Error al crear cliente');
+    await showAlert({
+      type: 'error',
+      title: 'Error',
+      message: 'Error al crear cliente',
+      confirmText: 'Aceptar'
+    });
   }
 };
 
@@ -129,6 +149,41 @@ const cargarDeudas = async () => {
 
   } catch (error) {
     console.error('Error cargando deudas:', error);
+  }
+};
+
+const handleEliminarCliente = async (e, idCliente) => {
+  e.stopPropagation();
+  
+  const confirmar = await showAlert({
+    type: 'confirm',
+    title: 'Eliminar Cliente',
+    message: '¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.',
+    confirmText: 'Sí, eliminar',
+    cancelText: 'Cancelar'
+  });
+
+  if (!confirmar) {
+    return;
+  }
+
+  try {
+    await api.clientes.delete(idCliente);
+    await showAlert({
+      type: 'success',
+      title: 'Éxito',
+      message: 'Cliente eliminado correctamente',
+      confirmText: 'Aceptar'
+    });
+    cargarDeudas();
+  } catch (error) {
+    console.error(error);
+    await showAlert({
+      type: 'error',
+      title: 'Error',
+      message: 'Error al eliminar cliente',
+      confirmText: 'Aceptar'
+    });
   }
 };
 
@@ -259,7 +314,11 @@ const cargarDeudas = async () => {
                 <div className="monto-cliente" aria-hidden="true">
                   <strong>${cliente.saldo_pendiente}</strong>
                 </div>
-                <button className="btn-eliminar" aria-label={`Eliminar a ${cliente.nombre} del sistema`}>
+                <button 
+                  className="btn-eliminar" 
+                  aria-label={`Eliminar a ${cliente.nombre} del sistema`}
+                  onClick={(e) => handleEliminarCliente(e, cliente.id_cliente)}
+                >
                   🗑️
                 </button>
               </div>

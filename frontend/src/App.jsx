@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import LoginPage from './pages/loginPage/loginPage.jsx';
 import Home from './pages/Home.jsx';
 import AdminModal from './pages/adminModal.jsx';
+import { AlertProvider } from './components/Alert.jsx';
+import './components/Alert.css';
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
@@ -36,25 +38,23 @@ export default function App() {
 
   if (cargando) return <div className="loading">Cargando FiadoRD...</div>;
 
-  if (!usuario) {
-    return <LoginPage onLoginSuccess={handleLogin} />;
-  }
-
-  if (usuario.rol === 'ADMIN' && mostrarAdminModal) {
-    return (
-      <AdminModal
-        usuario={usuario}
-        onClose={() => setMostrarAdminModal(false)}
-        onLogout={handleLogout}
-      />
-    );
-  }
-
   return (
-    <Home
-      usuario={usuario}
-      onLogout={handleLogout}
-      onOpenAdminModal={() => setMostrarAdminModal(true)}
-    />
+    <AlertProvider>
+      {!usuario ? (
+        <LoginPage onLoginSuccess={handleLogin} />
+      ) : usuario.rol === 'ADMIN' && mostrarAdminModal ? (
+        <AdminModal
+          usuario={usuario}
+          onClose={() => setMostrarAdminModal(false)}
+          onLogout={handleLogout}
+        />
+      ) : (
+        <Home
+          usuario={usuario}
+          onLogout={handleLogout}
+          onOpenAdminModal={() => setMostrarAdminModal(true)}
+        />
+      )}
+    </AlertProvider>
   );
 }
