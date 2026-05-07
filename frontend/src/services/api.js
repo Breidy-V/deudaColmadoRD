@@ -153,22 +153,80 @@ export const clientesAPI = {
 
 // ============ DEUDAS ============
 export const deudasAPI = {
-  // 🔹 Crear deuda
-  create: async (id_cliente, monto) => {
+  create: async (id_cliente, monto, descripcion = '', tasa_interes = 0) => {
     const response = await fetch(`${API_URL}/deudas`, {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify({
         id_cliente,
-        monto_total: monto
+        monto_total: monto,
+        descripcion,
+        tasa_interes
       }),
     });
     return handleResponse(response);
   },
 
-  // 🔹 Listar deudas
   list: async () => {
     const response = await fetch(`${API_URL}/deudas`, {
+      method: 'GET',
+      headers: getHeaders(true),
+    });
+    return handleResponse(response);
+  },
+
+  getById: async (id) => {
+    const response = await fetch(`${API_URL}/deudas/${id}`, {
+      method: 'GET',
+      headers: getHeaders(true),
+    });
+    return handleResponse(response);
+  },
+
+  update: async (id, { descripcion, tasa_interes, estado }) => {
+    const response = await fetch(`${API_URL}/deudas/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(true),
+      body: JSON.stringify({ descripcion, tasa_interes, estado }),
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (id) => {
+    const response = await fetch(`${API_URL}/deudas/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(true),
+    });
+    return handleResponse(response);
+  },
+};
+
+// ============ PAGOS ============
+export const pagosAPI = {
+  create: async (id_deuda, monto, metodo_pago = 'efectivo', observacion = '') => {
+    const response = await fetch(`${API_URL}/pagos`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify({
+        id_deuda,
+        monto,
+        metodo_pago,
+        observacion
+      }),
+    });
+    return handleResponse(response);
+  },
+
+  list: async () => {
+    const response = await fetch(`${API_URL}/pagos`, {
+      method: 'GET',
+      headers: getHeaders(true),
+    });
+    return handleResponse(response);
+  },
+
+  getByDeuda: async (id_deuda) => {
+    const response = await fetch(`${API_URL}/pagos/deuda/${id_deuda}`, {
       method: 'GET',
       headers: getHeaders(true),
     });
@@ -182,4 +240,5 @@ export const api = {
   users: usersAPI,
   deudas: deudasAPI,
   clientes: clientesAPI,
+  pagos: pagosAPI,
 };

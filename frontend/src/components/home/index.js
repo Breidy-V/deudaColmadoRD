@@ -1,0 +1,10 @@
+export { Header } from './Header';
+export { PerfilMenu } from './PerfilMenu';
+export { ResumenFinanciero } from './ResumenFinanciero';
+export { Buscador } from './Buscador';
+export { BotonesAccion } from './BotonesAccion';
+export { ListaDeudores } from './ListaDeudores';
+export { TarjetaCliente } from './TarjetaCliente';
+export { ModalAddCliente } from './ModalAddCliente';
+export { ModalGestionarDeuda } from './ModalGestionarDeuda';
+export { Footer } from './Footer';
