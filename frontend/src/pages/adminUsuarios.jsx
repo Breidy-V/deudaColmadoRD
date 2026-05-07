@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import './adminUsuario.css';
+import { useAlert } from '../components/Alert.jsx';
 
 function AdminUsuarios({ usuario, onBack, onLogout }) {
+  const { showAlert } = useAlert();
   // ==========================================
   // ESTADO DEL COMPONENTE
   // ==========================================
@@ -302,22 +304,35 @@ function AdminUsuarios({ usuario, onBack, onLogout }) {
   // ==========================================
   const handleEliminarUsuario = async (u) => {
     if (u.rol === 'ADMIN' && usuarios.filter((x) => x.rol === 'ADMIN').length === 1) {
-      setError('No se puede eliminar el único administrador');
+      await showAlert({
+        type: 'error',
+        title: 'Error',
+        message: 'No se puede eliminar el único administrador',
+        confirmText: 'Aceptar'
+      });
       return;
     }
 
-    if (window.confirm(`¿Estás seguro de que deseas eliminar a ${u.nombre}?`)) {
-      try {
-        // Llamar API
-        await api.users.delete(u.id);
+    const confirmar = await showAlert({
+      type: 'confirm',
+      title: 'Eliminar Usuario',
+      message: `¿Estás seguro de que deseas eliminar a ${u.nombre}?`,
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar'
+    });
 
-        // Eliminar de lista local
-        setUsuarios(usuarios.filter((x) => x.id !== u.id));
-        setExito(`${u.nombre} ha sido eliminado`);
-        setTimeout(() => setExito(''), 2000);
-      } catch (error) {
-        setError(error.message || 'Error al eliminar usuario');
-      }
+    if (!confirmar) {
+      return;
+    }
+
+    try {
+      await api.users.delete(u.id);
+
+      setUsuarios(usuarios.filter((x) => x.id !== u.id));
+      setExito(`${u.nombre} ha sido eliminado`);
+      setTimeout(() => setExito(''), 2000);
+    } catch (error) {
+      setError(error.message || 'Error al eliminar usuario');
     }
   };
 
