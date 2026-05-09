@@ -1,60 +1,29 @@
-/* =========================================
-  VARIABLES DE COLOR 
-========================================= */
-:root {
-  --bg-principal: #F4F7F6;
-  --bg-tarjeta: #FFFFFF;
-  --texto-principal: #2D3748;
-  --texto-secundario: #4A5568;
-  --texto-terciario: #718096;
-  --borde-suave: #E2E8F0;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-  --color-primario: #1D4ED8;
-  --color-primario-hover: #1E3A8A;
-
-  --alerta-roja-bg: #FEF2F2;
-  --alerta-roja-borde: #DC2626;
-  --alerta-roja-texto: #991B1B;
-
-  --focus-ring: 0 0 0 3px rgba(29, 78, 216, 0.5);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
-/* =========================================
-  REGLAS GLOBALES DE ACCESIBILIDAD
-========================================= */
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-  border-color: var(--color-primario);
-}
-
-input::placeholder {
-  color: var(--texto-terciario);
-}
-
-/* =========================================
-  CONTENEDOR PRINCIPAL DEL LOGIN
-========================================= */
+/* Contenedor principal */
 .login-container {
   width: 100%;
   min-height: 100vh;
-  background-color: #E5E7EB;
   display: flex;
   flex-direction: column;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: var(--texto-principal);
+  background: #1D4ED8;
+  overflow-x: hidden;
 }
 
-/* =========================================
-  HEADER DEL LOGIN
-========================================= */
+/* Header */
 .login-header {
-  background: linear-gradient(135deg, var(--color-primario) 0%, #1E40AF 100%);
+  background: #1D4ED8;
   color: #FFFFFF;
   padding: 40px 20px 30px;
   text-align: center;
+  width: 100%;
 }
 
 .login-logo {
@@ -72,37 +41,43 @@ input::placeholder {
 .login-logo h1 {
   margin: 0;
   font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-weight: 600;
 }
 
 .login-subtitle {
   margin: 8px 0 0 0;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.9rem;
   color: #E0E7FF;
 }
 
-/* =========================================
-  CONTENIDO PRINCIPAL
-========================================= */
+/* Contenido - centrado vertical y horizontal */
 .login-content {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px 20px;
+  padding: 20px;
+  width: 100%;
 }
 
-/* =========================================
-  TABS PARA LOGIN/REGISTRO
-========================================= */
+/* Formulario - cuadro blanco */
+.login-form {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  padding: 32px 28px;
+  border-radius: 12px;
+  box-shadow: 10px 10px 15px rgba(0,0,0,0.1);
+  margin: 0 auto;
+}
+
+/* Tabs dentro del cuadro blanco */
 .login-tabs {
-  display: none;
-  /* Mostrar en versión completa si es necesario */
+  display: flex;
   gap: 12px;
-  margin-bottom: 24px;
-  border-bottom: 2px solid var(--borde-suave);
+  margin-bottom: 28px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0;
 }
 
 .tab-btn {
@@ -111,139 +86,217 @@ input::placeholder {
   padding: 12px 20px;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--texto-terciario);
+  color: #999;
   cursor: pointer;
   border-bottom: 3px solid transparent;
   transition: all 0.3s ease;
+  margin-bottom: -2px;
 }
 
 .tab-btn.activo {
-  color: var(--color-primario);
-  border-bottom-color: var(--color-primario);
+  color: #1D4ED8;
+  border-bottom-color: #1D4ED8;
 }
 
-.tab-btn:hover {
-  color: var(--texto-secundario);
+.tab-btn:hover:not(.activo) {
+  color: #666;
 }
 
-/* =========================================
-  FORMULARIO DE LOGIN
-========================================= */
-.login-form {
-  background-color: var(--bg-tarjeta);
-  width: 100%;
-  max-width: 400px;
-  padding: 32px 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-}
-
+/* Títulos dentro del formulario */
 .login-form h2 {
-  margin: 0 0 8px 0;
-  font-size: 1.5rem;
-  color: var(--texto-principal);
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  text-align: left;
 }
 
 .form-subtitle {
-  margin: 0 0 24px 0;
-  font-size: 0.95rem;
-  color: var(--texto-terciario);
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 28px;
+  text-align: left;
 }
 
-/* =========================================
-  GRUPOS DE FORMULARIO
-========================================= */
+/* Grupos de formulario */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 18px;
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .form-group label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--texto-principal);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
 }
 
-.form-group input {
-  padding: 12px 14px;
-  border: 1px solid var(--borde-suave);
+.input-area {
+  height: 50px;
+  width: 100%;
+  position: relative;
+}
+
+.input-area input {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  padding: 0 45px;
+  font-size: 16px;
+  background: #f9f9f9;
+  color: #000000;
+  caret-color: #1D4ED8;
   border-radius: 8px;
-  font-size: 1rem;
-  color: var(--texto-principal);
-  background-color: var(--bg-principal);
-  transition: border-color 0.3s ease;
-  min-height: 44px;
-  /* Touch target accesible */
+  border: 1px solid #ddd;
+  border-bottom-width: 2px;
+  transition: all 0.2s ease;
 }
 
-.form-group input:focus {
-  background-color: var(--bg-tarjeta);
-  border-color: var(--color-primario);
+/* Forzar color de texto negro en autocompletado */
+.input-area input:-webkit-autofill,
+.input-area input:-webkit-autofill:hover,
+.input-area input:-webkit-autofill:focus,
+.input-area input:-webkit-autofill:active {
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #f9f9f9 inset !important;
+  caret-color: #1D4ED8;
 }
 
-.form-group input::placeholder {
-  color: var(--texto-terciario);
+.input-area input:focus {
+  border-color: #1D4ED8;
+  background: #fff;
 }
 
-/* =========================================
-  MENSAJES DE ERROR
-========================================= */
+.input-area input.valid {
+  border-color: #10B981;
+}
+
+.input-area input.error {
+  border-color: #dc3545;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-6px);
+  }
+  40%, 80% {
+    transform: translateX(6px);
+  }
+}
+
+/* Iconos */
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #aaa;
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+.input-area input:focus ~ .input-icon,
+.input-area input.valid ~ .input-icon {
+  color: #1D4ED8;
+}
+
+.input-area input.error ~ .input-icon {
+  color: #dc3545;
+}
+
+.validation-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.validation-icon.visible {
+  opacity: 1;
+}
+
+.validation-icon.success {
+  color: #10B981;
+}
+
+.validation-icon.error {
+  color: #dc3545;
+}
+
+/* Mensajes de error */
+.field-error-txt {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 6px;
+  text-align: left;
+}
+
 .error-message {
-  background-color: var(--alerta-roja-bg);
-  border: 1px solid var(--alerta-roja-borde);
-  color: var(--alerta-roja-texto);
+  background: #FEF2F2;
+  border: 1px solid #dc3545;
+  color: #991B1B;
   padding: 12px;
   border-radius: 8px;
-  font-size: 0.9rem;
-  margin-bottom: 16px;
-  border-left: 4px solid var(--alerta-roja-borde);
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: left;
+  border-left: 4px solid #dc3545;
 }
 
-/* =========================================
-  BOTONES
-========================================= */
+/* Botón login */
 .btn-login {
   width: 100%;
-  padding: 14px;
-  margin-bottom: 16px;
-  background-color: var(--color-primario);
-  color: #FFFFFF;
+  height: 50px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+  color: #fff;
+  padding: 0;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  background: #1D4ED8;
   cursor: pointer;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
   transition: all 0.3s ease;
-  min-height: 48px;
-  /* Touch target grande */
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .btn-login:hover {
-  background-color: var(--color-primario-hover);
-  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
-}
-
-.btn-login:active {
-  transform: scale(0.98);
+  background: #1E3A8A;
+  transform: translateY(-1px);
 }
 
 .btn-login:disabled {
-  background-color: var(--texto-terciario);
+  background: #9CA3AF;
   cursor: not-allowed;
-  opacity: 0.6;
+  transform: none;
 }
 
-/* =========================================
-  DIVISOR
-========================================= */
+/* Divisor */
 .divider {
   text-align: center;
   margin: 20px 0;
-  font-size: 0.85rem;
-  color: var(--texto-terciario);
+  font-size: 14px;
+  color: #aaa;
   position: relative;
+}
+
+.divider span {
+  background: #fff;
+  padding: 0 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .divider::before {
@@ -253,79 +306,270 @@ input::placeholder {
   top: 50%;
   width: 100%;
   height: 1px;
-  background-color: var(--borde-suave);
-  z-index: -1;
+  background: #ddd;
+  z-index: 0;
 }
 
-.divider {
-  background-color: var(--bg-tarjeta);
-  padding: 0 8px;
-  display: inline-block;
-  width: 100%;
-}
-
-/* =========================================
-  BOTÓN GOOGLE OAUTH
-========================================= */
+/* Botón Google */
 .btn-google {
+  visibility: hidden;
   width: 100%;
-  padding: 14px;
-  background-color: var(--bg-principal);
-  color: var(--texto-principal);
-  border: 1px solid var(--borde-suave);
+  height: 48px;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   transition: all 0.3s ease;
-  min-height: 48px;
+  margin-bottom: 20px;
 }
 
 .btn-google:hover {
-  background-color: #F1F5F9;
-  border-color: var(--color-primario);
-  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.1);
+  background: #f5f5f5;
+  border-color: #1D4ED8;
 }
 
-.btn-google:active {
-  transform: scale(0.98);
-}
-
-/* =========================================
-  NOTA PARA ADMIN
-========================================= */
+/* Nota admin */
 .nota-admin {
+  visibility: hidden;
   margin-top: 20px;
   padding: 12px;
-  background-color: #FEF9E7;
+  background: #FEF9E7;
   border: 1px solid #FCD34D;
   border-radius: 8px;
-  font-size: 0.85rem;
-  color: var(--texto-principal);
+  font-size: 12px;
+  color: #333;
   border-left: 4px solid #F59E0B;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.nota-admin:hover {
+  transform: translateX(4px);
 }
 
 .nota-admin code {
-  background-color: rgba(0, 0, 0, 0.05);
+  background: rgba(0,0,0,0.05);
   padding: 2px 6px;
   border-radius: 4px;
-  font-family: 'Courier New', monospace;
   font-weight: 600;
+  color: #1D4ED8;
 }
 
-/* =========================================
-  FOOTER DEL LOGIN
-========================================= */
+.nota-admin small {
+  font-size: 10px;
+  color: #666;
+  display: block;
+  margin-top: 6px;
+}
+
+/* Footer */
 .login-footer {
   text-align: center;
   padding: 20px;
-  color: var(--texto-terciario);
-  font-size: 0.85rem;
-  border-top: 1px solid var(--borde-suave);
-  background-color: var(--bg-tarjeta);
-  margin-top: auto;
+  color: #E0E7FF;
+  font-size: 12px;
+  background: transparent;
+  width: 100%;
+}
+
+/* =========================================
+   RESPONSIVE - MÓVIL
+========================================= */
+@media (max-width: 480px) {
+  .login-header {
+    padding: 30px 16px 20px;
+  }
+  
+  .login-logo span {
+    font-size: 2rem;
+  }
+  
+  .login-logo h1 {
+    font-size: 1.6rem;
+  }
+  
+  .login-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .login-content {
+    padding: 16px;
+  }
+  
+  .login-form {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+  
+  .login-form h2 {
+    font-size: 24px;
+  }
+  
+  .form-subtitle {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  
+  .tab-btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+  }
+  
+  .input-area {
+    height: 46px;
+  }
+  
+  .input-area input {
+    font-size: 14px;
+    padding: 0 42px;
+  }
+  
+  .btn-login {
+    height: 46px;
+    font-size: 15px;
+  }
+  
+  .btn-google {
+    height: 44px;
+    font-size: 14px;
+  }
+  
+  .nota-admin {
+    font-size: 11px;
+    padding: 10px;
+  }
+}
+
+/* =========================================
+   RESPONSIVE - TABLET
+========================================= */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .login-header {
+    padding: 40px 40px 30px;
+  }
+  
+  .login-logo span {
+    font-size: 3rem;
+  }
+  
+  .login-logo h1 {
+    font-size: 2.2rem;
+  }
+  
+  .login-form {
+    max-width: 450px;
+    padding: 36px 32px;
+  }
+  
+  .login-form h2 {
+    font-size: 28px;
+  }
+  
+  .tab-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+}
+
+/* =========================================
+   RESPONSIVE - DESKTOP (MODO COLUMNA)
+========================================= */
+@media (min-width: 1024px) {
+  .login-container {
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .login-header {
+    width: 100%;
+    min-height: auto;
+    padding: 50px 20px 40px;
+    border-radius: 0;
+  }
+  
+  .login-logo span {
+    font-size: 3.5rem;
+  }
+  
+  .login-logo h1 {
+    font-size: 2.5rem;
+  }
+  
+  .login-subtitle {
+    font-size: 1rem;
+  }
+  
+  .login-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    flex: 1;
+  }
+  
+  .login-form {
+    max-width: 550px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 48px 42px;
+    border-radius: 16px;
+  }
+  
+  .login-footer {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background: transparent;
+    position: relative;
+    bottom: 0;
+  }
+}
+
+/* =========================================
+   DESKTOP GRANDE (pantallas muy anchas)
+========================================= */
+@media (min-width: 1440px) {
+  .login-form {
+    max-width: 600px;
+    padding: 52px 48px;
+  }
+  
+  .login-logo span {
+    font-size: 4rem;
+  }
+  
+  .login-logo h1 {
+    font-size: 3rem;
+  }
+}
+
+/* Preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .nota-admin:hover {
+    transform: none;
+  }
+  
+  .btn-login:hover {
+    transform: none;
+  }
 }

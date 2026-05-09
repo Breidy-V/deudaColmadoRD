@@ -39,18 +39,24 @@ export const AlertProvider = ({ children }) => {
 
 export const useAlert = () => {
   const context = useContext(AlertContext);
-  if (!context) {
+
+  if (!context || !context.showAlert) {
     return {
-      showAlert: async (options) => {
-        if (options.type === 'confirm') {
-          return window.confirm(options.message);
-        }
-        window.alert(options.message);
-        return true;
-      }
+      success: (message) => { window.alert(message); },
+      error: (message) => { window.alert(message); },
+      warning: (message) => { window.alert(message); },
+      info: (message) => { window.alert(message); }
     };
   }
-  return context;
+
+  return {
+    success: (message, title = 'Éxito') => context.showAlert({ type: 'success', message, title }),
+    error: (message, title = 'Error') => context.showAlert({ type: 'error', message, title }),
+    warning: (message, title = 'Advertencia') => context.showAlert({ type: 'warning', message, title }),
+    info: (message, title = 'Información') => context.showAlert({ type: 'info', message, title }),
+    showAlert: context.showAlert,
+    hideAlert: context.hideAlert
+  };
 };
 
 const createAlertHandler = (context) => {

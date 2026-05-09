@@ -16,6 +16,7 @@ db.run(`
     password TEXT NOT NULL,
     rol TEXT DEFAULT 'USER',
     estado TEXT DEFAULT 'activo',
+    ultimo_acceso DATETIME, -- <--- Aquí está la que querías
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
